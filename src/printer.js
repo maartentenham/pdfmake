@@ -126,7 +126,9 @@ PdfPrinter.prototype.createPdfKitDocument = function (docDefinition, options) {
 		fontLayoutCache: isBoolean(options.fontLayoutCache) ? options.fontLayoutCache : true,
 		bufferPages: options.bufferPages || false,
 		autoFirstPage: false,
-		font: null
+		font: null,
+		tagged: true,
+		displayTitle: true
 	};
 
 	this.pdfKitDoc = PdfKitEngine.createPdfDocument(pdfOptions);
@@ -398,6 +400,11 @@ function renderPages(pages, fontProvider, pdfKitDoc, progressCallback) {
 				case 'endClip':
 					endClip(pdfKitDoc);
 					break;
+				case 'tag':
+					beginTag(item.item, pdfKitDoc);
+					break;
+				case 'endTag':
+					endTag(item.item, pdfKitDoc);
 			}
 			renderedItems++;
 			progressCallback(renderedItems / totalItems);
@@ -680,6 +687,20 @@ function beginClip(rect, pdfKitDoc) {
 
 function endClip(pdfKitDoc) {
 	pdfKitDoc.restore();
+}
+
+function beginTag(tag, pdfKitDoc) {
+	console.log('MARKING CONTENT: '  + tag.tag);
+	tag.lineStruct = pdfKitDoc.struct(tag.tag);
+	pdfKitDoc.addStructure(tag.lineStruct);
+	tag.lineStructContent = pdfKitDoc.markStructureContent(tag.tag);
+}
+
+function endTag(tag, pdfKitDoc) {
+	console.log('END MARKING CONTENT: '  + tag.tag);
+	pdfKitDoc.endMarkedContent();
+	tag.lineStruct.add(tag.lineStructContent);
+	tag.lineStruct.end();
 }
 
 module.exports = PdfPrinter;
