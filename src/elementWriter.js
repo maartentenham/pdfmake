@@ -289,6 +289,28 @@ ElementWriter.prototype.addFragment = function (block, useBlockXOffset, useBlock
 	return true;
 };
 
+ElementWriter.prototype.addTag = function (tag) {
+	var ctx = this.context;
+	var page = ctx.getCurrentPage();
+
+	page.items.push({
+		type: 'tag',
+		item: tag
+	});
+	return true;
+};
+
+ElementWriter.prototype.addEndTag = function (tag) {
+	var ctx = this.context;
+	var page = ctx.getCurrentPage();
+
+	page.items.push({
+		type: 'endTag',
+		item: tag
+	});
+	return true;
+};
+
 /**
  * Pushes the provided context onto the stack or creates a new one
  *

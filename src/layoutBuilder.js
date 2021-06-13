@@ -472,12 +472,18 @@ LayoutBuilder.prototype.processNode = function (node) {
 // vertical container
 LayoutBuilder.prototype.processVerticalContainer = function (node) {
 	var self = this;
+	if (node.tag) {
+		self.writer.addTag(node);
+	}
 	node.stack.forEach(function (item) {
 		self.processNode(item);
 		addAll(node.positions, item.positions);
 
 		//TODO: paragraph gap
 	});
+	if (node.tag) {
+		self.writer.addEndTag(node);
+	}
 };
 
 // columns
@@ -681,6 +687,10 @@ LayoutBuilder.prototype.processLeaf = function (node) {
 
 	if (node._pageRef) {
 		line._pageNodeRef = node._pageRef._nodeRef;
+	}
+
+	if (node.tag) {
+		line.tag = node.tag;
 	}
 
 	if (line && line.inlines && isArray(line.inlines)) {

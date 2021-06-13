@@ -75,6 +75,15 @@ PageElementWriter.prototype.addFragment = function (fragment, useBlockXOffset, u
 	}
 };
 
+PageElementWriter.prototype.addTag = function (tag) {
+	this.writer.addTag(tag);
+};
+
+PageElementWriter.prototype.addEndTag = function (tag) {
+	this.writer.addEndTag(tag);
+};
+
+
 PageElementWriter.prototype.moveToNextPage = function (pageOrientation) {
 
 	var nextPage = this.writer.context.moveToNextPage(pageOrientation);
